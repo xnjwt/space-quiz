@@ -319,6 +319,49 @@
     .feedback-copy strong { display: block; margin-bottom: 2px; font-size: 14px; }
     .feedback-copy span { display: block; color: var(--muted); }
 
+    .mission-picker {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .mission-option {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      width: 100%;
+      min-height: 72px;
+      padding: 16px 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--surface-alt);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .18s ease, background .18s ease, transform .18s ease, box-shadow .18s ease;
+    }
+
+    .mission-option:hover,
+    .mission-option:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 17%, transparent);
+      outline: none;
+    }
+
+    .mission-option-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -.02em;
+    }
+
+    .mission-option-meta {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
     .actions {
       display: flex;
       justify-content: flex-end;
@@ -601,29 +644,105 @@
     let nextButton;
     let quizCard;
     let footerNote;
+    let missionLength = 10;
+    let activeQuestions = [];
     let currentQuestion = 0;
     let score = 0;
     let hasAnswered = false;
 
+    function getMissionOptions() {
+      return [
+        { label: "Misión corta", length: 5, description: "5 preguntas" },
+        { label: "Misión completa", length: 10, description: "10 preguntas" }
+      ];
+    }
+
+    function renderMissionSelection() {
+      quizCard.innerHTML = `
+        <div class="card-content">
+          <div class="topline">
+            <p class="eyebrow">Nueva misión</p>
+            <div class="score-pill" aria-live="polite" aria-label="Puntuación">
+              <span aria-hidden="true">✦</span> <strong id="score">0</strong><span>puntos</span>
+            </div>
+          </div>
+          <h1 id="question" tabindex="-1">¿Cuánto tiempo quieres dedicar?</h1>
+          <p class="subtitle">Elige una misión antes de despegar.</p>
+          <div class="mission-picker" role="group" aria-label="Duración de la misión">
+            ${getMissionOptions().map((option) => `
+              <button
+                type="button"
+                class="mission-option"
+                data-length="${option.length}"
+                aria-label="Elegir ${option.label.toLowerCase()}: ${option.length} preguntas"
+              >
+                <span class="mission-option-title">${option.label}</span>
+                <span class="mission-option-meta">${option.description}</span>
+              </button>
+            `).join("")}
+          </div>
+        </div>`;
+      bindElements();
+      scoreElement.textContent = "0";
+      footerNote.textContent = "Elige una misión para comenzar";
+      questionTitle.focus();
+      document.querySelectorAll(".mission-option").forEach((button) => {
+        button.addEventListener("click", () => startMission(Number(button.dataset.length)));
+      });
+    }
+
+    function renderQuizView() {
+      quizCard.innerHTML = `
+        <div class="card-content">
+          <div class="topline">
+            <p class="eyebrow">Misión de exploración</p>
+            <div class="score-pill" aria-live="polite" aria-label="Puntuación">
+              <span aria-hidden="true">✦</span> <strong id="score">0</strong><span>puntos</span>
+            </div>
+          </div>
+          <div class="progress-meta">
+            <span id="question-count">Pregunta 1 de ${activeQuestions.length}</span>
+            <span id="progress-percent">${Math.round(100 / activeQuestions.length)} %</span>
+          </div>
+          <div class="progress-track" role="progressbar" aria-label="Progreso del cuestionario" aria-valuemin="0" aria-valuemax="${activeQuestions.length}" aria-valuenow="1" id="progress">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+          <h1 id="question" tabindex="-1"></h1>
+          <p class="subtitle">Elige la respuesta correcta para continuar tu misión.</p>
+          <fieldset class="answers" id="answers" aria-label="Opciones de respuesta"></fieldset>
+          <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+          <div class="actions">
+            <button class="primary-button" id="next-button" type="button" hidden>
+              Siguiente pregunta <span aria-hidden="true">→</span>
+            </button>
+          </div>
+        </div>`;
+      bindElements();
+      scoreElement.textContent = String(score);
+      footerNote.textContent = `${activeQuestions.length} preguntas · Sin prisa, cadete espacial`;
+    }
+
     function renderQuestion() {
-      const item = questions[currentQuestion];
+      const item = activeQuestions[currentQuestion];
       const number = currentQuestion + 1;
+      const totalQuestions = activeQuestions.length;
       hasAnswered = false;
       questionTitle.textContent = item.question;
       questionTitle.classList.remove("question-enter");
       void questionTitle.offsetWidth;
       questionTitle.classList.add("question-enter");
-      questionCountElement.textContent = `Pregunta ${number} de ${questions.length}`;
-      progressPercent.textContent = `${Math.round(number / questions.length * 100)} %`;
+      questionCountElement.textContent = `Pregunta ${number} de ${totalQuestions}`;
+      progressPercent.textContent = `${Math.round(number / totalQuestions * 100)} %`;
+      progressElement.setAttribute("aria-valuemax", String(totalQuestions));
       progressElement.setAttribute("aria-valuenow", String(number));
       progressFill.classList.remove("is-advancing");
       void progressFill.offsetWidth;
-      progressFill.style.width = `${number / questions.length * 100}%`;
+      progressFill.style.width = `${number / totalQuestions * 100}%`;
       progressFill.classList.add("is-advancing");
       feedbackElement.className = "feedback";
       feedbackElement.textContent = "";
       nextButton.hidden = true;
-      nextButton.innerHTML = number === questions.length
+      nextButton.innerHTML = number === totalQuestions
         ? 'Ver resultados <span aria-hidden="true">→</span>'
         : 'Siguiente pregunta <span aria-hidden="true">→</span>';
 
@@ -640,10 +759,20 @@
       }));
     }
 
+    function startMission(length) {
+      missionLength = length;
+      activeQuestions = questions.slice(0, length);
+      currentQuestion = 0;
+      score = 0;
+      renderQuizView();
+      renderQuestion();
+      questionTitle.focus();
+    }
+
     function selectAnswer(selectedIndex) {
       if (hasAnswered) return;
       hasAnswered = true;
-      const item = questions[currentQuestion];
+      const item = activeQuestions[currentQuestion];
       const isCorrect = selectedIndex === item.correct;
       const buttons = [...answersElement.querySelectorAll(".answer")];
 
@@ -704,7 +833,8 @@
     }
 
     function showResults() {
-      const percentage = score / questions.length;
+      const totalQuestions = activeQuestions.length;
+      const percentage = score / totalQuestions;
       const result = percentage === 1
         ? { emoji: "🏆", title: "¡Misión perfecta!", copy: "Tu conocimiento del espacio está fuera de este mundo. ¡Enhorabuena, cadete!" }
         : percentage >= .7
@@ -719,8 +849,8 @@
           <p class="eyebrow">Misión completada</p>
           <h1 id="result-title" tabindex="-1">${result.title}</h1>
           <p class="result-copy">${result.copy}</p>
-          <div class="result-score" aria-label="Puntuación final: ${score} de ${questions.length}">
-            <strong>${score}/${questions.length}</strong><span>respuestas correctas</span>
+          <div class="result-score" aria-label="Puntuación final: ${score} de ${totalQuestions}">
+            <strong>${score}/${totalQuestions}</strong><span>respuestas correctas</span>
           </div>
           <button class="primary-button" id="restart-button" type="button">
             <span aria-hidden="true">↻</span> Volver a jugar
@@ -735,34 +865,7 @@
     function restartQuiz() {
       currentQuestion = 0;
       score = 0;
-      scoreElement.textContent = "0";
-      footerNote.textContent = "10 preguntas · Sin prisa, cadete espacial";
-      quizCard.innerHTML = `
-        <div class="card-content">
-          <div class="topline">
-            <p class="eyebrow">Misión de exploración</p>
-            <div class="score-pill" aria-live="polite" aria-label="Puntuación">
-              <span aria-hidden="true">✦</span> <strong id="score">0</strong><span>puntos</span>
-            </div>
-          </div>
-          <div class="progress-meta">
-            <span id="question-count">Pregunta 1 de 10</span>
-            <span id="progress-percent">10 %</span>
-          </div>
-          <div class="progress-track" role="progressbar" aria-label="Progreso del cuestionario" aria-valuemin="0" aria-valuemax="10" aria-valuenow="1" id="progress">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-          <h1 id="question" tabindex="-1"></h1>
-          <p class="subtitle">Elige la respuesta correcta para continuar tu misión.</p>
-          <fieldset class="answers" id="answers" aria-label="Opciones de respuesta"></fieldset>
-          <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
-          <div class="actions">
-            <button class="primary-button" id="next-button" type="button" hidden>
-              Siguiente pregunta <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        </div>`;
-      bindElements();
+      renderQuizView();
       renderQuestion();
       questionTitle.focus();
     }
@@ -779,20 +882,22 @@
       nextButton = document.querySelector("#next-button");
       quizCard = document.querySelector("#quiz");
       footerNote = document.querySelector("#footer-note");
-      nextButton.addEventListener("click", () => {
-        if (!hasAnswered) return;
-        if (currentQuestion === questions.length - 1) {
-          showResults();
-          return;
-        }
-        currentQuestion += 1;
-        renderQuestion();
-        questionTitle.focus();
-      });
+      if (nextButton) {
+        nextButton.addEventListener("click", () => {
+          if (!hasAnswered) return;
+          if (currentQuestion === activeQuestions.length - 1) {
+            showResults();
+            return;
+          }
+          currentQuestion += 1;
+          renderQuestion();
+          questionTitle.focus();
+        });
+      }
     }
 
     bindElements();
-    renderQuestion();
+    renderMissionSelection();
   </script>
 </body>
 </html>
