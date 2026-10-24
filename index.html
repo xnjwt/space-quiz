@@ -181,6 +181,141 @@
       font-size: 14px;
     }
 
+    .mascot-host {
+      display: flex;
+      max-width: 370px;
+      min-height: 88px;
+      align-items: center;
+      gap: 13px;
+      margin: 0 auto 17px;
+      color: var(--accent);
+    }
+
+    .mascot-art {
+      position: relative;
+      width: 86px;
+      height: 88px;
+      flex: 0 0 86px;
+    }
+
+    .space-pet { width: 100%; height: 100%; overflow: visible; }
+    .pet-shadow { fill: color-mix(in srgb, var(--ink) 13%, transparent); }
+    .pet-suit { fill: var(--pet-suit); }
+    .pet-suit-detail { fill: var(--surface); }
+    .pet-fur { fill: var(--pet-fur); }
+    .pet-ear-inner { fill: var(--pet-ear); }
+    .pet-helmet {
+      fill: color-mix(in srgb, var(--accent) 9%, var(--surface));
+      stroke: color-mix(in srgb, var(--accent) 72%, var(--surface));
+      stroke-width: 2.5;
+    }
+    .pet-helmet-glint {
+      fill: none;
+      stroke: var(--surface);
+      stroke-linecap: round;
+      stroke-width: 2.5;
+      opacity: .8;
+    }
+    .pet-eye { fill: var(--ink); transform-box: fill-box; transform-origin: center; }
+    .pet-cheek { fill: var(--bad); opacity: .65; }
+    .pet-mouth {
+      fill: none;
+      stroke: var(--ink);
+      stroke-linecap: round;
+      stroke-width: 2;
+    }
+    .pet-frown { display: none; }
+    .pet-arm-left, .pet-arm-right, .pet-body, .pet-head {
+      transform-box: fill-box;
+    }
+    .pet-arm-left { transform-origin: 100% 15%; }
+    .pet-arm-right { transform-origin: 0 15%; }
+    .pet-body { transform-origin: 50% 100%; }
+    .pet-head { transform-origin: 50% 75%; }
+    .pet-star {
+      fill: var(--good);
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+    .pet-flame { fill: var(--good); transform-box: fill-box; transform-origin: 50% 0; }
+
+    .mascot-message {
+      position: relative;
+      flex: 1;
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px 14px 14px 5px;
+      background: var(--surface-alt);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 700;
+      line-height: 1.4;
+      animation: bubble-in .35s cubic-bezier(.2, .8, .25, 1) both;
+    }
+
+    .mascot-message::before {
+      position: absolute;
+      top: 50%;
+      left: -6px;
+      width: 10px;
+      height: 10px;
+      border-bottom: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+      background: var(--surface-alt);
+      content: "";
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .pet-name { color: var(--accent); }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --pet-fur: #ffe5ad;
+        --pet-ear: #ff9eb4;
+        --pet-suit: #a69cf5;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --pet-fur: #fff0c8;
+        --pet-ear: #f08ca5;
+        --pet-suit: #797ee8;
+      }
+    }
+
+    .pet-cheek { fill: #f08ca5; }
+    .pet-nose { fill: #e87991; }
+    .pet-eye-glint { fill: #fff; }
+    .pet-ear { fill: var(--pet-fur); }
+
+    .mascot-host[data-mood="idle"] .pet-body { animation: pet-bob 2.5s ease-in-out infinite; }
+    .mascot-host[data-mood="idle"] .pet-arm-left { animation: pet-wave 2.8s ease-in-out infinite; }
+    .mascot-host[data-mood="idle"] .pet-eyes { animation: pet-blink 4.2s infinite; }
+    .mascot-host[data-mood="idle"] .pet-flame { animation: flame-flicker .32s ease-in-out infinite alternate; }
+
+    .mascot-host[data-mood="correct"] .pet-body { animation: pet-hop .7s cubic-bezier(.2, .8, .25, 1); }
+    .mascot-host[data-mood="correct"] .pet-arm-left { animation: pet-cheer-left .65s ease-in-out; }
+    .mascot-host[data-mood="correct"] .pet-arm-right { animation: pet-cheer-right .65s ease-in-out; }
+    .mascot-host[data-mood="correct"] .pet-star { animation: pet-sparkle .75s ease-out both; }
+    .mascot-host[data-mood="correct"] .pet-flame { animation: flame-burst .65s ease-out; }
+
+    .mascot-host[data-mood="incorrect"] .pet-head { animation: pet-sympathy .65s ease-in-out; }
+    .mascot-host[data-mood="incorrect"] .pet-arm-right { animation: pet-comfort .55s ease-in-out; }
+    .mascot-host[data-mood="incorrect"] .pet-smile { display: none; }
+    .mascot-host[data-mood="incorrect"] .pet-frown { display: block; }
+
+    .mascot-host[data-mood="result"] .pet-body,
+    .mascot-host[data-mood="perfect"] .pet-body { animation: pet-hop .8s cubic-bezier(.2, .8, .25, 1) infinite; }
+    .mascot-host[data-mood="result"] .pet-arm-left,
+    .mascot-host[data-mood="perfect"] .pet-arm-left { animation: pet-cheer-left .8s ease-in-out infinite alternate; }
+    .mascot-host[data-mood="result"] .pet-arm-right,
+    .mascot-host[data-mood="perfect"] .pet-arm-right { animation: pet-cheer-right .8s ease-in-out infinite alternate; }
+    .mascot-host[data-mood="result"] .pet-star,
+    .mascot-host[data-mood="perfect"] .pet-star { animation: pet-sparkle 1s ease-in-out infinite alternate; }
+    .mascot-host[data-mood="perfect"] .pet-flame { animation: flame-burst .7s ease-in-out infinite alternate; }
+
     .answers {
       display: grid;
       gap: 10px;
@@ -400,18 +535,9 @@
     .result { padding: 38px 32px 34px; text-align: center; animation: result-arrive .55s cubic-bezier(.2, .8, .25, 1) both; }
     .result { position: relative; }
 
-    .result-emoji {
-      display: grid;
-      width: 94px;
-      height: 94px;
-      place-items: center;
-      margin: 0 auto 17px;
-      border: 1px solid var(--line);
-      border-radius: 29px;
-      background: var(--accent-soft);
-      font-size: 49px;
-      animation: float 2.8s ease-in-out infinite, result-pop .6s .12s cubic-bezier(.2, 1.8, .4, 1) both;
-    }
+    .result .mascot-host { margin: -5px auto 15px; text-align: left; }
+    .result .mascot-art { width: 106px; height: 105px; flex-basis: 106px; }
+    .result .mascot-message { max-width: 230px; }
 
     .result .eyebrow { text-align: center; }
     .result h1 { margin: 9px 0 9px; }
@@ -454,15 +580,15 @@
     }
 
     @keyframes appear {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 1; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
     @keyframes question-enter {
-      from { opacity: 0; transform: translateY(12px); }
+      from { opacity: 1; transform: translateY(12px); }
       to { opacity: 1; transform: translateY(0); }
     }
     @keyframes option-arrive {
-      from { opacity: 0; transform: translateY(12px) scale(.98); }
+      from { opacity: 1; transform: translateY(12px) scale(.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     @keyframes icon-pop {
@@ -478,7 +604,7 @@
       50% { filter: brightness(1.35); }
     }
     @keyframes result-arrive {
-      from { opacity: 0; transform: translateY(18px) scale(.98); }
+      from { opacity: 1; transform: translateY(18px) scale(.98); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
     @keyframes result-pop {
@@ -508,6 +634,57 @@
       0%, 100% { transform: translateY(0) rotate(-2deg); }
       50% { transform: translateY(-6px) rotate(2deg); }
     }
+    @keyframes bubble-in {
+      from { opacity: 1; transform: translateX(-6px) scale(.97); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    @keyframes pet-bob {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-3px) rotate(2deg); }
+    }
+    @keyframes pet-wave {
+      0%, 75%, 100% { transform: rotate(0); }
+      82% { transform: rotate(-14deg); }
+      90% { transform: rotate(9deg); }
+    }
+    @keyframes pet-blink {
+      0%, 43%, 47%, 100% { transform: scaleY(1); }
+      45% { transform: scaleY(.12); }
+    }
+    @keyframes pet-hop {
+      0%, 100% { transform: translateY(0) rotate(0); }
+      28% { transform: translateY(-10px) rotate(-5deg); }
+      55% { transform: translateY(1px) rotate(4deg); }
+      76% { transform: translateY(-4px) rotate(-2deg); }
+    }
+    @keyframes pet-cheer-left {
+      0%, 100% { transform: rotate(0); }
+      45% { transform: rotate(-48deg); }
+    }
+    @keyframes pet-cheer-right {
+      0%, 100% { transform: rotate(0); }
+      45% { transform: rotate(48deg); }
+    }
+    @keyframes pet-sympathy {
+      0%, 100% { transform: rotate(0); }
+      45% { transform: rotate(-9deg) translateY(2px); }
+    }
+    @keyframes pet-comfort {
+      0%, 100% { transform: rotate(0); }
+      50% { transform: rotate(14deg); }
+    }
+    @keyframes pet-sparkle {
+      0% { opacity: 0; transform: scale(.25) rotate(-25deg); }
+      40% { opacity: 1; transform: scale(1.2) rotate(12deg); }
+      100% { opacity: .3; transform: scale(.8) rotate(30deg); }
+    }
+    @keyframes flame-flicker {
+      from { transform: scaleY(.8) scaleX(.85); }
+      to { transform: scaleY(1.2) scaleX(1.1); }
+    }
+    @keyframes flame-burst {
+      50% { transform: scaleY(1.8) scaleX(1.2); }
+    }
 
     @media (max-width: 520px) {
       body { padding: 25px 14px 32px; }
@@ -515,6 +692,10 @@
       .card { border-radius: 20px; }
       .card-content { padding: 24px 20px 23px; }
       .result { padding: 32px 21px 28px; }
+      .mascot-host { gap: 8px; }
+      .mascot-art { width: 74px; height: 82px; flex-basis: 74px; }
+      .mascot-message { padding: 10px 12px; font-size: 12px; }
+      .result .mascot-art { width: 88px; height: 92px; flex-basis: 88px; }
       h1 { margin-top: 23px; }
     }
 
@@ -556,6 +737,7 @@
 
         <h1 id="question" tabindex="-1"></h1>
         <p class="subtitle">Elige la respuesta correcta para continuar tu misión.</p>
+        <div id="mascot-container"></div>
         <fieldset class="answers" id="answers" aria-label="Opciones de respuesta"></fieldset>
         <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
         <div class="actions">
@@ -646,6 +828,7 @@
     let footerNote;
     let missionLength = 10;
     let activeQuestions = [];
+    let mascotContainer;
     let currentQuestion = 0;
     let score = 0;
     let hasAnswered = false;
@@ -709,6 +892,7 @@
           </div>
           <h1 id="question" tabindex="-1"></h1>
           <p class="subtitle">Elige la respuesta correcta para continuar tu misión.</p>
+          <div id="mascot-container"></div>
           <fieldset class="answers" id="answers" aria-label="Opciones de respuesta"></fieldset>
           <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
           <div class="actions">
@@ -722,11 +906,74 @@
       footerNote.textContent = `${activeQuestions.length} preguntas · Sin prisa, cadete espacial`;
     }
 
+    function mascotMarkup(mood = "idle") {
+      return `
+        <div class="mascot-host" id="mascot-host" data-mood="${mood}" aria-hidden="true">
+          <div class="mascot-art">
+            <svg class="space-pet" viewBox="0 0 128 126" focusable="false">
+              <ellipse class="pet-shadow" cx="64" cy="115" rx="23" ry="5"></ellipse>
+              <g class="pet-sparkles">
+                <path class="pet-star" d="M20 49l2.4 5.6L28 57l-5.6 2.4L20 65l-2.4-5.6L12 57l5.6-2.4z"></path>
+                <path class="pet-star" d="M106 36l2 4.5 4.5 2-4.5 2-2 4.5-2-4.5-4.5-2 4.5-2z"></path>
+                <path class="pet-star" d="M101 82l1.7 3.8 3.8 1.7-3.8 1.7-1.7 3.8-1.7-3.8-3.8-1.7 3.8-1.7z"></path>
+              </g>
+              <g class="pet-jet">
+                <path class="pet-flame" d="M57 97q7 8 0 13 0-4-4-6 3-2 4-7z"></path>
+                <path class="pet-flame" d="M71 97q-7 8 0 13 0-4 4-6-3-2-4-7z"></path>
+              </g>
+              <g class="pet-arm-left">
+                <path d="M43 76 31 84" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-width="12"></path>
+                <circle cx="30" cy="84" r="6" class="pet-suit"></circle>
+              </g>
+              <g class="pet-arm-right">
+                <path d="m85 76 12 8" fill="none" stroke="var(--accent)" stroke-linecap="round" stroke-width="12"></path>
+                <circle cx="98" cy="84" r="6" class="pet-suit"></circle>
+              </g>
+              <g class="pet-body">
+                <path class="pet-suit" d="M43 72q21-14 42 0l7 25q-28 16-56 0z"></path>
+                <path class="pet-suit-detail" d="M53 73q11 6 22 0l-3 8H56z"></path>
+                <rect class="pet-suit-detail" x="55" y="86" width="18" height="12" rx="5"></rect>
+                <path d="m64 87 1.5 3.2 3.5.5-2.5 2.5.6 3.4-3.1-1.6-3.1 1.6.6-3.4-2.5-2.5 3.5-.5z" fill="var(--pet-suit)"></path>
+                <path class="pet-suit" d="M47 95q-6 4-5 10h14v-7M81 95q6 4 5 10H72v-7"></path>
+                <path d="M47 104h9M72 104h9" fill="none" stroke="var(--line)" stroke-linecap="round" stroke-width="2"></path>
+              </g>
+              <g class="pet-head">
+                <path class="pet-ear" d="M47 37C34 18 42 8 51 17l13 17m17 3C94 18 86 8 77 17L64 34"></path>
+                <path class="pet-ear-inner" d="M46 29c-5-9-3-12 1-8l9 13m26-5c5-9 3-12-1-8l-9 13"></path>
+                <circle class="pet-helmet" cx="64" cy="47" r="34"></circle>
+                <ellipse class="pet-fur" cx="64" cy="48" rx="24" ry="23"></ellipse>
+                <g class="pet-eyes">
+                  <ellipse class="pet-eye" cx="54" cy="46" rx="4" ry="5"></ellipse>
+                  <ellipse class="pet-eye" cx="74" cy="46" rx="4" ry="5"></ellipse>
+                  <circle class="pet-eye-glint" cx="55.5" cy="44.5" r="1.35"></circle>
+                  <circle class="pet-eye-glint" cx="75.5" cy="44.5" r="1.35"></circle>
+                </g>
+                <ellipse class="pet-cheek" cx="47" cy="55" rx="4.2" ry="2.6"></ellipse>
+                <ellipse class="pet-cheek" cx="81" cy="55" rx="4.2" ry="2.6"></ellipse>
+                <path class="pet-nose" d="M61 52q3-3 6 0 0 3-3 4-3-1-3-4z"></path>
+                <path class="pet-mouth pet-smile" d="M64 56q-2 4-5 2m5-2q2 4 5 2"></path>
+                <path class="pet-mouth pet-frown" d="M59 60q5-6 10 0"></path>
+                <path class="pet-helmet-glint" d="M39 42q3-15 15-19"></path>
+                <path class="pet-helmet-glint" d="m89 56 1-4"></path>
+              </g>
+            </svg>
+          </div>
+          <span class="mascot-message"><span class="pet-name">Pipo</span> <span class="mascot-words"></span></span>
+        </div>`;
+    }
+
+    function updateMascot(mood, message) {
+      const mascot = mascotContainer.querySelector("#mascot-host");
+      mascot.dataset.mood = mood;
+      mascot.querySelector(".mascot-words").textContent = message;
+    }
+
     function renderQuestion() {
       const item = activeQuestions[currentQuestion];
       const number = currentQuestion + 1;
       const totalQuestions = activeQuestions.length;
       hasAnswered = false;
+      updateMascot("idle", `¡Vamos con la pregunta ${number}!`);
       questionTitle.textContent = item.question;
       questionTitle.classList.remove("question-enter");
       void questionTitle.offsetWidth;
@@ -797,6 +1044,10 @@
         scorePill.classList.add("is-celebrating");
       }
 
+      const mascotMessages = isCorrect
+        ? ["¡Lo sabía! ¡Eres increíble!", "¡Respuesta estelar!", "¡Misión cumplida, cadete!"]
+        : ["¡Uy! No pasa nada, aprendemos juntos.", "¡Casi! La próxima la atrapamos.", "¡Todo explorador se equivoca alguna vez!"];
+      updateMascot(isCorrect ? "correct" : "incorrect", mascotMessages[Math.floor(Math.random() * mascotMessages.length)]);
       feedbackElement.className = `feedback visible ${isCorrect ? "correct" : "incorrect"}`;
       feedbackElement.innerHTML = `<span class="feedback-mark" aria-hidden="true">${isCorrect ? "✓" : "↻"}</span><span class="feedback-copy"><strong></strong><span></span></span>`;
       feedbackElement.querySelector(".feedback-copy strong").textContent = isCorrect ? "¡Sí, lo tienes!" : "¡Casi! Sigue explorando.";
@@ -845,7 +1096,7 @@
 
       quizCard.innerHTML = `
         <div class="result">
-          <div class="result-emoji" aria-hidden="true">${result.emoji}</div>
+          ${mascotMarkup(score === totalQuestions ? "perfect" : "result")}
           <p class="eyebrow">Misión completada</p>
           <h1 id="result-title" tabindex="-1">${result.title}</h1>
           <p class="result-copy">${result.copy}</p>
@@ -857,6 +1108,8 @@
           </button>
         </div>`;
       footerNote.textContent = "Gracias por viajar con Órbita";
+      mascotContainer = quizCard;
+      updateMascot(score === totalQuestions ? "perfect" : "result", `${result.emoji} ${result.title} ¡Lo lograste!`);
       launchConfetti(document.querySelector(".result"), 32);
       document.querySelector("#restart-button").addEventListener("click", restartQuiz);
       document.querySelector("#result-title").focus();
@@ -882,6 +1135,8 @@
       nextButton = document.querySelector("#next-button");
       quizCard = document.querySelector("#quiz");
       footerNote = document.querySelector("#footer-note");
+      mascotContainer = document.querySelector("#mascot-container");
+      if (mascotContainer) mascotContainer.innerHTML = mascotMarkup();
       if (nextButton) {
         nextButton.addEventListener("click", () => {
           if (!hasAnswered) return;
